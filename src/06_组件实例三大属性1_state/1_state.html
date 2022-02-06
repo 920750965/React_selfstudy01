@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>state属性</title>
+</head>
+<body>
+<div id="test"></div>
+
+<script type="text/javascript" src="../js/react.development.js"></script>
+<script type="text/javascript" src="../js/react-dom.development.js"></script>
+<script type="text/javascript" src="../js/babel.min.js"></script>
+
+<script type="text/babel">
+    // let that
+    //创建组件
+    class Weather extends React.Component{
+        constructor(props) {  //构造器只调用一次
+            super(props);
+            this.state = {isHot:false}
+            // that = this
+            //实例对象自身多了changeWeather方法
+            this.demo = this.changeWeather.bind(this)
+        }
+        render() { //render调用1+n次，1是初始化的那次，n是状态更新的次数
+            //console.log(this)
+            const {isHot} = this.state
+            //作为onClick的回调所以不是通过实例调用的，而是直接调用
+            //类中的方法默认开启了局部的严格模式，所以changeWeather中的this为undefined
+            return<h1 onClick={this.demo}>今天天气{isHot ? '炎热' : '凉爽'}</h1>
+            //return<h1>今天天气{this.state.isHot ? '炎热' : '凉爽'}</h1>
+        }
+        changeWeather(){ //点几次调用几次
+            // alert('按钮3被点击了')
+            //changeWeather在Weather的原型对象上，供实例使用
+            //通过Weather实例调用changeWeather，changeWeather中的this就是Weather实例
+
+            //获取原来的isHot值
+            const isHot = this.state.isHot
+            //注意：状态必须通过setState进行更改，这是一个合并操作，不是替换操作
+            this.setState({isHot: !isHot})
+
+            //注意：state不可直接更改，要借助内部API更改，下面这行就是直接更改！！
+            // this.state.isHot = !isHot  //这是错误的写法！！
+        }
+    }
+    ReactDOM.render(<Weather/>,document.getElementById('test'))
+
+    // const title = document.getElementById('title')
+    // title.addEventListener('click',()=>{
+    //     console.log('标题被点击了')
+    // })
+    // title.onclick = ()=>{
+    //     console.log('标题被点击')
+    // }
+
+
+</script>
+</body>
+</html>
